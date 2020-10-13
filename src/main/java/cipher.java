@@ -1,33 +1,80 @@
-import static java.lang.Character.isLowerCase;
-import static java.lang.Character.isUpperCase;
 
-public class cipher {
-    private static final int ALPHABET_SIZE = 26;
-    public String caesarcipher(String message, int rotateBy) {
-        rotateBy %= ALPHABET_SIZE;
-        char [] chars = message.toCharArray();
-        rotate(chars, rotateBy);
-        return new String(chars);
-    }
-
-    private void rotate(char[] chars, int rotateBy) {
-       for (int i = 0; i < chars.length; ++i){
-           if (isLowerCase(chars[i])){
-               chars[i] = rotateChar( chars[i], rotateBy, 'a', 'z');
-           }else if (isUpperCase(chars[i])){
-               chars[i] = rotateChar(chars[i], rotateBy, 'A', 'Z');
-           }
-       }
-    }
-    private char rotateChar (char c, int rotateBy, char firstChar, char lastChar){
-        c += rotateBy;
-        if (c < firstChar) {
-            return (char) (c + ALPHABET_SIZE);
-        }if (c > lastChar) {
-            return (char) (c - ALPHABET_SIZE);
+public class cipher{
+    public static String encrypt (String message, int shift ){
+        if (shift>26){
+            shift = shift%26;
+        }else if (shift<0){
+            shift = (shift%26)+26;
         }
-        return c;
+        String cipherText = "";
+        int length = message.length();
+        for (int i = 0; i<length; i++){
+            char ch = message.charAt(i);
+            if(Character.isLetter(ch)){
+                if (Character.isLowerCase(ch)){
+                    char c = (char)(ch+shift);
+                    if (c>'z'){
+                        cipherText +=(char)(ch-(26-shift));
+                    } else{
+                        cipherText += c;
+                    }
+
+                } else if (Character.isUpperCase(ch)) {
+                    char c = (char)(ch+shift);
+                    if (c>'Z'){
+                        cipherText +=(char)(ch-(26-shift));
+                    } else{
+                        cipherText += c;
+                    }
+
+                }
+                } else {
+                    cipherText += ch;
+                }
+        }
+        return cipherText;
+    }
+    public static String decrypt (String message, int shift ){
+        if (shift>26){
+            shift = shift%26;
+        }else if (shift<0){
+            shift = (shift%26)+26;
+        }
+        String cipherText = "";
+        int length = message.length();
+        for (int i = 0; i<length; i++){
+            char ch = message.charAt(i);
+            if(Character.isLetter(ch)){
+                if (Character.isLowerCase(ch)){
+                    char c = (char)(ch-shift);
+                    if (c<'a'){
+                        cipherText +=(char)(ch+(26-shift));
+                    } else{
+                        cipherText += c;
+                    }
+
+                } else if (Character.isUpperCase(ch)) {
+                    char c = (char)(ch-shift);
+                    if (c<'A'){
+                        cipherText +=(char)(ch+(26-shift));
+                    } else{
+                        cipherText += c;
+                    }
+
+                }
+            } else {
+                cipherText += ch;
+            }
+        }
+        return cipherText;
     }
 
-
+    public static void main(String[] args) {
+        String text = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+        String cipher = encrypt(text, 5);
+        System.out.println(cipher);
+        String decrypted = decrypt(cipher, 5);
+        System.out.println(decrypted);
+    }
 }
+
